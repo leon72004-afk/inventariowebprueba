@@ -40,21 +40,26 @@ async function ensureDbInitialized() {
     const count = await prisma.user.count();
     isDbOk = true;
     console.log(`[DB-CHECK] Database is healthy. User count: ${count}`);
-  } catch (err: any) {
+    } catch (err: any) {
     console.log('[DB-CHECK] Database connection failed or tables missing. Attempting self-healing...');
     dbInitAttempted = true;
-    try {
-      const { execSync } = await import('child_process');
-      console.log('[DB-CHECK] Running: npx prisma db push --accept-data-loss');
-      execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit', timeout: 60000 });
-      console.log('[DB-CHECK] Seeding database...');
-      execSync('npx prisma db seed', { stdio: 'inherit', timeout: 60000 });
-      isDbOk = true;
-      console.log('[DB-CHECK] Database self-healing completed successfully!');
-    } catch (pushErr: any) {
-      console.error('[DB-CHECK] Database self-healing failed:', pushErr.message);
-      if (pushErr.stdout) console.error('[DB-CHECK] stdout:', pushErr.stdout.toString());
-      if (pushErr.stderr) console.error('[DB-CHECK] stderr:', pushErr.stderr.toString());
+    // On Vercel serverless, execSync is unreliable and the build already runs prisma db push + seed
+    if (!process.env.VERCEL) {
+      try {
+        const { execSync } = await import('child_process');
+        console.log('[DB-CHECK] Running: npx prisma db push --accept-data-loss');
+        execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit', timeout: 60000 });
+        console.log('[DB-CHECK] Seeding database...');
+        execSync('npx prisma db seed', { stdio: 'inherit', timeout: 60000 });
+        isDbOk = true;
+        console.log('[DB-CHECK] Database self-healing completed successfully!');
+      } catch (pushErr: any) {
+        console.error('[DB-CHECK] Database self-healing failed:', pushErr.message);
+        if (pushErr.stdout) console.error('[DB-CHECK] stdout:', pushErr.stdout.toString());
+        if (pushErr.stderr) console.error('[DB-CHECK] stderr:', pushErr.stderr.toString());
+      }
+    } else {
+      console.log('[DB-CHECK] Vercel environment detected. Self-healing skipped (build already handled db push + seed).');
     }
   } finally {
     isDbChecking = false;
@@ -1471,10 +1476,12 @@ const app = express();
     }
   }
 
-  // Poll notifications check every 30 seconds
-  const whatsappInterval = setInterval(() => {
-    runWhatsAppNotificationCheck();
-  }, 30000);
+  // Poll notifications check every 30 seconds (only in non-serverless environments)
+  if (!process.env.VERCEL) {
+    setInterval(() => {
+      runWhatsAppNotificationCheck();
+    }, 30000);
+  }
 
   /**
    * 14. POST /api/v1/leads
