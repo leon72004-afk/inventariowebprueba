@@ -99,7 +99,7 @@ export function WhatsAppDemoPanel() {
   const [draft, setDraft] = useState('');
   const [typing, setTyping] = useState(false);
 
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const activeConversation = useMemo(
     () => conversations.find((item) => item.id === activeId),
@@ -112,8 +112,14 @@ export function WhatsAppDemoPanel() {
   );
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [activeMessages.length, typing]);
+  const container = messagesContainerRef.current;
+  if (!container) return;
+
+  container.scrollTo({
+    top: container.scrollHeight,
+    behavior: 'smooth',
+  });
+}, [activeId, activeMessages.length, typing]);
 
   useEffect(() => {
     setConversations((prev) =>
@@ -254,8 +260,8 @@ export function WhatsAppDemoPanel() {
   }
 
   return (
-  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden">
-    <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-gradient-to-r from-[#0f766e] to-[#115e59] text-white">
+  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden h-[720px] max-h-[calc(100vh-180px)]">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-[#075E54] text-white">
       <div>
         <div className="font-bold text-lg">Recordatorios WhatsApp</div>
         <div className="text-xs text-emerald-100/80">
@@ -269,7 +275,7 @@ export function WhatsAppDemoPanel() {
       </div>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-[680px]">
+    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-full min-h-0 overflow-hidden">
       {/* Sidebar */}
       <aside className="border-r border-[#1E293B] bg-[#0F172A] overflow-y-auto">
         <div className="p-3 border-b border-[#1E293B] bg-[#111827]">
@@ -374,7 +380,9 @@ export function WhatsAppDemoPanel() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#111827]">
+        <div
+          ref={messagesContainerRef}
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 bg-[#111827]">
           {activeMessages.map((message) => (
             <div
               key={message.id}
@@ -407,7 +415,7 @@ export function WhatsAppDemoPanel() {
             </div>
           )}
 
-          <div ref={bottomRef} />
+          
         </div>
 
         {/* Input */}
