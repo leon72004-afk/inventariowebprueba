@@ -1,5 +1,4 @@
 import express from 'express';
-import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
@@ -1646,12 +1645,17 @@ const app = express();
 
   // Vite preview / distribution build middleware for Cloud Run / Dev
   if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-    createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    }).then((vite) => {
+  import('vite')
+    .then(({ createServer: createViteServer }) => {
+      return createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+    })
+    .then((vite) => {
       app.use(vite.middlewares);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.error('Error starting Vite dev server middleware:', err);
     });
   } else {
