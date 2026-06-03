@@ -254,176 +254,183 @@ export function WhatsAppDemoPanel() {
   }
 
   return (
-    <div className="rounded-2xl border bg-white shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-[#075E54] text-white">
-        <div>
-          <div className="font-bold">Recordatorios WhatsApp</div>
-          <div className="text-xs opacity-80">
-            Demo visual · WhatsApp Business
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs bg-white/15 px-3 py-1 rounded-full">
-          <span className="h-2 w-2 rounded-full bg-green-300 animate-pulse" />
-          En vivo
+  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-gradient-to-r from-[#0f766e] to-[#115e59] text-white">
+      <div>
+        <div className="font-bold text-lg">Recordatorios WhatsApp</div>
+        <div className="text-xs text-emerald-100/80">
+          Demo visual · WhatsApp Business
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-[680px]">
-        <aside className="border-r bg-[#f7f7f7] overflow-y-auto">
-          <div className="p-3 border-b bg-white">
-            <input
-              placeholder="Buscar cliente o teléfono..."
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+      <div className="flex items-center gap-2 text-xs bg-white/10 px-3 py-1 rounded-full border border-white/10">
+        <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+        En vivo
+      </div>
+    </div>
 
-          {conversations.map((conversation) => (
-            <button
-              key={conversation.id}
-              onClick={() => setActiveId(conversation.id)}
-              className={`w-full text-left px-4 py-3 border-b hover:bg-white transition ${
-                activeId === conversation.id ? 'bg-white' : ''
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex gap-3">
-                  <div className="h-11 w-11 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
-                    {conversation.name.charAt(0)}
-                  </div>
+    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-[680px]">
+      {/* Sidebar */}
+      <aside className="border-r border-[#1E293B] bg-[#0F172A] overflow-y-auto">
+        <div className="p-3 border-b border-[#1E293B] bg-[#111827]">
+          <input
+            placeholder="Buscar cliente o teléfono..."
+            className="w-full rounded-lg border border-[#334155] bg-[#0B1120] px-3 py-2 text-sm text-white placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+        </div>
 
-                  <div>
-                    <div className="font-semibold text-sm">
-                      {conversation.name}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {conversation.phone}
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {conversation.vehicle}
-                    </div>
-                  </div>
+        {conversations.map((conversation) => (
+          <button
+            key={conversation.id}
+            onClick={() => setActiveId(conversation.id)}
+            className={`w-full text-left px-4 py-3 border-b border-[#1E293B] transition ${
+              activeId === conversation.id
+                ? 'bg-[#1E293B] border-l-4 border-emerald-500'
+                : 'hover:bg-[#111827]'
+            }`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex gap-3">
+                <div className="h-11 w-11 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+                  {conversation.name.charAt(0)}
                 </div>
 
-                {conversation.unread > 0 && (
-                  <span className="bg-green-500 text-white text-xs rounded-full px-2 py-0.5">
-                    {conversation.unread}
+                <div>
+                  <div className="font-semibold text-sm text-white">
+                    {conversation.name}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    {conversation.phone}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {conversation.vehicle}
+                  </div>
+                </div>
+              </div>
+
+              {conversation.unread > 0 && (
+                <span className="bg-emerald-500 text-white text-xs rounded-full px-2 py-0.5">
+                  {conversation.unread}
+                </span>
+              )}
+            </div>
+
+            <div className="mt-2 text-xs text-gray-400 truncate">
+              {conversation.lastMessage}
+            </div>
+          </button>
+        ))}
+      </aside>
+
+      {/* Chat */}
+      <main className="flex flex-col bg-[#111827]">
+        <div className="px-4 py-3 bg-[#0F172A] border-b border-[#1E293B] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+              {activeConversation?.name.charAt(0)}
+            </div>
+
+            <div>
+              <div className="font-semibold text-sm text-white">
+                {activeConversation?.name}
+              </div>
+              <div className="text-xs text-gray-400">
+                {typing
+                  ? 'escribiendo...'
+                  : activeConversation?.status === 'online'
+                    ? 'en línea'
+                    : activeConversation?.phone}
+              </div>
+            </div>
+          </div>
+
+          <div className="text-xs text-gray-400">
+            {activeConversation?.vehicle}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="p-3 bg-[#0B1120] border-b border-[#1E293B] flex flex-wrap gap-2">
+          <button
+            onClick={sendReminder}
+            className="rounded-full bg-emerald-600 text-white text-xs px-3 py-2 hover:bg-emerald-700 transition"
+          >
+            Enviar recordatorio
+          </button>
+
+          <button
+            onClick={sendConfirmation}
+            className="rounded-full bg-blue-600 text-white text-xs px-3 py-2 hover:bg-blue-700 transition"
+          >
+            Confirmar cita
+          </button>
+
+          <button
+            onClick={sendReschedule}
+            className="rounded-full bg-amber-500 text-white text-xs px-3 py-2 hover:bg-amber-600 transition"
+          >
+            Reagendar
+          </button>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#111827]">
+          {activeMessages.map((message) => (
+            <div
+              key={message.id}
+              className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm shadow-sm border ${
+                message.direction === 'outbound'
+                  ? 'ml-auto bg-emerald-900/40 border-emerald-700/40 text-emerald-50'
+                  : 'mr-auto bg-[#1E293B] border-[#334155] text-gray-100'
+              }`}
+            >
+              <div>{message.text}</div>
+
+              <div className="mt-1 flex justify-end gap-1 text-[10px] text-gray-400">
+                <span>{message.time}</span>
+                {message.direction === 'outbound' && (
+                  <span className="text-emerald-300">
+                    {message.status === 'read'
+                      ? '✓✓'
+                      : message.status === 'delivered'
+                        ? '✓✓'
+                        : '✓'}
                   </span>
                 )}
               </div>
-
-              <div className="mt-2 text-xs text-gray-500 truncate">
-                {conversation.lastMessage}
-              </div>
-            </button>
+            </div>
           ))}
-        </aside>
 
-        <main className="flex flex-col bg-[#efeae2]">
-          <div className="px-4 py-3 bg-[#f0f2f5] border-b flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
-                {activeConversation?.name.charAt(0)}
-              </div>
-
-              <div>
-                <div className="font-semibold text-sm">
-                  {activeConversation?.name}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {typing
-                    ? 'escribiendo...'
-                    : activeConversation?.status === 'online'
-                      ? 'en línea'
-                      : activeConversation?.phone}
-                </div>
-              </div>
+          {typing && (
+            <div className="mr-auto bg-[#1E293B] border border-[#334155] rounded-2xl px-4 py-3 text-sm shadow-sm text-gray-400">
+              escribiendo...
             </div>
+          )}
 
-            <div className="text-xs text-gray-500">
-              {activeConversation?.vehicle}
-            </div>
-          </div>
+          <div ref={bottomRef} />
+        </div>
 
-          <div className="p-3 bg-white border-b flex flex-wrap gap-2">
-            <button
-              onClick={sendReminder}
-              className="rounded-full bg-green-600 text-white text-xs px-3 py-2 hover:bg-green-700"
-            >
-              Enviar recordatorio
-            </button>
+        {/* Input */}
+        <div className="p-3 bg-[#0F172A] border-t border-[#1E293B] flex gap-2">
+          <input
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') sendText();
+            }}
+            placeholder="Escribe un mensaje..."
+            className="flex-1 rounded-full border border-[#334155] bg-[#111827] px-4 py-2 text-sm text-white placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-emerald-500"
+          />
 
-            <button
-              onClick={sendConfirmation}
-              className="rounded-full bg-blue-600 text-white text-xs px-3 py-2 hover:bg-blue-700"
-            >
-              Confirmar cita
-            </button>
-
-            <button
-              onClick={sendReschedule}
-              className="rounded-full bg-amber-500 text-white text-xs px-3 py-2 hover:bg-amber-600"
-            >
-              Reagendar
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-2">
-            {activeMessages.map((message) => (
-              <div
-                key={message.id}
-                className={`max-w-[78%] rounded-lg px-3 py-2 text-sm shadow-sm ${
-                  message.direction === 'outbound'
-                    ? 'ml-auto bg-[#d9fdd3]'
-                    : 'mr-auto bg-white'
-                }`}
-              >
-                <div>{message.text}</div>
-
-                <div className="mt-1 flex justify-end gap-1 text-[10px] text-gray-500">
-                  <span>{message.time}</span>
-                  {message.direction === 'outbound' && (
-                    <span>
-                      {message.status === 'read'
-                        ? '✓✓'
-                        : message.status === 'delivered'
-                          ? '✓✓'
-                          : '✓'}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-
-            {typing && (
-              <div className="mr-auto bg-white rounded-lg px-3 py-2 text-sm shadow-sm text-gray-500">
-                escribiendo...
-              </div>
-            )}
-
-            <div ref={bottomRef} />
-          </div>
-
-          <div className="p-3 bg-[#f0f2f5] border-t flex gap-2">
-            <input
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') sendText();
-              }}
-              placeholder="Escribe un mensaje..."
-              className="flex-1 rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-green-500"
-            />
-
-            <button
-              onClick={() => sendText()}
-              className="rounded-full bg-green-600 text-white px-5 py-2 text-sm font-semibold hover:bg-green-700"
-            >
-              Enviar
-            </button>
-          </div>
-        </main>
-      </div>
+          <button
+            onClick={() => sendText()}
+            className="rounded-full bg-emerald-600 text-white px-5 py-2 text-sm font-semibold hover:bg-emerald-700 transition"
+          >
+            Enviar
+          </button>
+        </div>
+      </main>
     </div>
-  );
+  </div>
+);
 }
