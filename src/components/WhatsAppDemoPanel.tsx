@@ -260,8 +260,8 @@ export function WhatsAppDemoPanel() {
   }
 
   return (
-  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden h-[720px] max-h-[calc(100vh-180px)]">
-    <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-[#075E54] text-white">
+  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden h-[720px] max-h-[calc(100vh-180px)] flex flex-col">
+    <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-gradient-to-r from-[#0f766e] to-[#115e59] text-white">
       <div>
         <div className="font-bold text-lg">Recordatorios WhatsApp</div>
         <div className="text-xs text-emerald-100/80">
@@ -275,7 +275,7 @@ export function WhatsAppDemoPanel() {
       </div>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-full min-h-0 overflow-hidden">
+    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] flex-1 min-h-0 overflow-hidden">
       {/* Sidebar */}
       <aside className="border-r border-[#1E293B] bg-[#0F172A] overflow-y-auto">
         <div className="p-3 border-b border-[#1E293B] bg-[#111827]">
@@ -330,7 +330,7 @@ export function WhatsAppDemoPanel() {
 
       {/* Chat */}
       <main className="flex flex-col bg-[#111827]">
-        <div className="px-4 py-3 bg-[#0F172A] border-b border-[#1E293B] flex items-center justify-between">
+        <div className="shrink-0 px-4 py-3 bg-[#0F172A] border-b border-[#1E293B] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
               {activeConversation?.name.charAt(0)}
@@ -356,7 +356,7 @@ export function WhatsAppDemoPanel() {
         </div>
 
         {/* Action buttons */}
-        <div className="p-3 bg-[#0B1120] border-b border-[#1E293B] flex flex-wrap gap-2">
+        <div className="shrink-0 p-3 bg-[#0B1120] border-b border-[#1E293B] flex flex-wrap gap-2">
           <button
             onClick={sendReminder}
             className="rounded-full bg-emerald-600 text-white text-xs px-3 py-2 hover:bg-emerald-700 transition"
@@ -419,7 +419,7 @@ export function WhatsAppDemoPanel() {
         </div>
 
         {/* Input */}
-        <div className="p-3 bg-[#0F172A] border-t border-[#1E293B] flex gap-2">
+        <div className="shrink-0 p-3 bg-[#0F172A] border-t border-[#1E293B] flex gap-2">
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
