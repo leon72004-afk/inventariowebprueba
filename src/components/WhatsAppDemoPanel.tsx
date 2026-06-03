@@ -260,7 +260,7 @@ export function WhatsAppDemoPanel() {
   }
 
   return (
-  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden h-[720px] max-h-[calc(100vh-180px)] flex flex-col">
+  <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] shadow-sm overflow-hidden h-[calc(100vh-190px)] min-h-[620px] max-h-[760px] flex flex-col">
     <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-[#1E293B] bg-gradient-to-r from-[#0f766e] to-[#115e59] text-white">
       <div>
         <div className="font-bold text-lg">Recordatorios WhatsApp</div>
@@ -277,7 +277,7 @@ export function WhatsAppDemoPanel() {
 
     <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] flex-1 min-h-0 overflow-hidden">
       {/* Sidebar */}
-      <aside className="border-r border-[#1E293B] bg-[#0F172A] overflow-y-auto">
+      <aside className="border-r border-[#1E293B] bg-[#0F172A] h-full min-h-0 overflow-y-auto">
         <div className="p-3 border-b border-[#1E293B] bg-[#111827]">
           <input
             placeholder="Buscar cliente o teléfono..."
@@ -329,7 +329,7 @@ export function WhatsAppDemoPanel() {
       </aside>
 
       {/* Chat */}
-      <main className="flex flex-col bg-[#111827]">
+      <main className="flex flex-col bg-[#111827] h-full min-h-0 overflow-hidden">
         <div className="shrink-0 px-4 py-3 bg-[#0F172A] border-b border-[#1E293B] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
@@ -382,7 +382,8 @@ export function WhatsAppDemoPanel() {
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 bg-[#111827]">
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 bg-[#111827]"
+          style={{ scrollbarGutter: 'stable' }}>
           {activeMessages.map((message) => (
             <div
               key={message.id}
