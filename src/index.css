@@ -117,6 +117,28 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+.whatsapp-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b #0f172a;
+}
+
+.whatsapp-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.whatsapp-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.whatsapp-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 999px;
+}
+
+.whatsapp-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -382,7 +382,7 @@ export function WhatsAppDemoPanel() {
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 bg-[#111827]"
+          className="whatsapp-scrollbar flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 bg-[#111827]"
           style={{ scrollbarGutter: 'stable' }}>
           {activeMessages.map((message) => (
             <div
