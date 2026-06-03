@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
+import { WhatsAppDemoPanel } from '../components/WhatsAppDemoPanel';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -3114,192 +3115,12 @@ export default function Dashboard() {
           )
         )}
 
-        {/* TAB: WHATSAPP AUTO-REMINDERS & BOT WEBHOOK SIMULATOR */}
-        {activeTab === 'whatsapp' && (
-          <div className="space-y-6">
-            <div className="bg-[#0F172A] border border-orange-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
-              <div className="space-y-2 max-w-xl">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black uppercase tracking-wider font-mono">
-                  <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping"></span>
-                  Automatización Activa
-                </div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tight">Recordatorios Automatizados 2 Horas Antes</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  WeWash escanea preventivamente tus bahías en background. Cuando una reservación está a <strong>2 horas o menos</strong> de iniciar, dispara automáticamente un mensaje de confirmación para que el cliente asegure su asistencia desde su dispositivo móvil.
-                </p>
-              </div>
-              <button 
-                onClick={fetchNotifications} 
-                disabled={loadingNotifications}
-                className="px-5 py-2.5 bg-[#1E293B] hover:bg-[#2D3C52] border border-white/5 text-gray-200 hover:text-white font-extrabold text-xs rounded-xl transition flex items-center gap-2 whitespace-nowrap self-stretch md:self-auto justify-center"
-              >
-                {loadingNotifications ? 'Sincronizando...' : '🔄 Forzar Recarga de Cola'}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              
-              {/* Webhook Simulator Interactive Console */}
-              <div className="lg:col-span-4 space-y-6">
-                <form onSubmit={handleSimulateWebhook} className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-6 space-y-4">
-                  <div>
-                    <h4 className="text-sm font-black text-white uppercase tracking-tight flex items-center gap-1.5 text-orange-400">
-                      <span>⚡</span>
-                      Simulador de Webhook WhatsApp
-                    </h4>
-                    <p className="text-[10px] text-gray-400 mt-1 leading-relaxed">
-                      Replica la respuesta que un cliente enviaría a tu línea de negocio. Nuestra IA interpretará el texto para cambiar de estado la cita en tu base de datos.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 pt-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-gray-400 uppercase font-black">Celular del Cliente</label>
-                      <input 
-                        type="tel"
-                        required
-                        placeholder="Ej: 3004567890"
-                        value={simPhone}
-                        onChange={(e) => setSimPhone(e.target.value)}
-                        className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl px-4 py-2 text-xs outline-none text-white transition font-mono"
-                      />
-                      {appointments.length > 0 && (
-                        <div className="pt-1.5 flex flex-wrap gap-1 items-center">
-                          <span className="text-[9px] text-gray-500">Sugeridos:</span>
-                          {appointments.slice(0, 3).map(app => (
-                            <button
-                              key={app.id}
-                              type="button"
-                              onClick={() => {
-                                setSimPhone(app.customer?.phone || '');
-                                toast.success(`Celular de ${app.customer?.name} seleccionado.`);
-                              }}
-                              className="text-[9px] font-mono hover:text-orange-400 bg-[#162032] px-1.5 py-0.5 rounded text-gray-400 border border-white/5"
-                            >
-                              {app.customer?.name} ({app.customer?.phone})
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-gray-400 uppercase font-black">Texto de Respuesta del Motorista</label>
-                      <select
-                        value={simMessage}
-                        onChange={(e) => setSimMessage(e.target.value)}
-                        className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl px-4 py-2 text-xs outline-none text-white transition"
-                      >
-                        <option value="CONFIRMAR">"CONFIRMAR" (SÍ asistiré)</option>
-                        <option value="SÍ, CONFIRMO LA CITA">"SÍ, CONFIRMO LA CITA"</option>
-                        <option value="CANCELAR TURNO">"CANCELAR TURNO" (No podré ir)</option>
-                        <option value="NO PUEDO REAGENDAR ASISTENCIA">"NO"</option>
-                      </select>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isSimulating}
-                      className="w-full py-2.5 mt-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs rounded-xl shadow-lg transition disabled:opacity-50"
-                    >
-                      {isSimulating ? 'Interpretando Respuesta...' : 'Procesar Turno'}
-                    </button>
-                  </div>
-                </form>
-
-                {/* Templates customizer / instructions */}
-                <div className="bg-[#0F172A] border border-white/5 rounded-2xl p-6 space-y-3.5 text-xs text-gray-400">
-                  <h5 className="font-extrabold text-white text-xs uppercase tracking-tight">Estructura del Recordatorio</h5>
-                  <p className="leading-relaxed">El sistema compone dinámicamente tu plantilla de notificaciones:</p>
-                  <div className="bg-[#080D16] p-4 rounded-xl border border-white/5 font-mono text-[10px] space-y-1.5 leading-relaxed text-gray-300">
-                    <p className="text-orange-400">"Hola [Cliente], WeWash te destaca tu cita en [Lavadero] hoy a las [Hora] (en 2 horas). Por favor resguarda tu lugar respondiendo CONFIRMAR o cliqueando acá: [ConfirmLink]"</p>
-                  </div>
-                  <p className="leading-relaxed">La interacción responde en tiempo real a las confirmaciones liberando técnicos y horarios si es rechazado.</p>
-                </div>
-              </div>
-
-              {/* Sent reminders and log list */}
-              <div className="lg:col-span-8 bg-[#0F172A] border border-[#1E293B] rounded-2xl p-6 space-y-4">
-                <div>
-                  <h4 className="text-base font-black text-white uppercase tracking-tight">Historial de Turnos y Mensajería</h4>
-                  <p className="text-xs text-gray-400 mt-1">Lista unificada de recordatorios SMS, Correo y WhatsApp que se han despachado para tu establecimiento.</p>
-                </div>
-
-                {loadingNotifications ? (
-                  <div className="py-12 flex flex-col items-center justify-center space-y-3">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-                    <p className="text-xs text-gray-500 animate-pulse">Sincronizando log con base de datos sqlite...</p>
-                  </div>
-                ) : notifications.length === 0 ? (
-                  <div className="py-16 text-center text-gray-500 space-y-2 border border-dashed border-white/5 rounded-xl">
-                    <p className="text-sm">Ningún recordatorio enviado aún.</p>
-                    <p className="text-xs">Los recordatorios de WhatsApp aparecerán aquí una vez que decolen las citas o simules un envío.</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs text-gray-300">
-                      <thead>
-                        <tr className="border-b border-[#1E293B] text-gray-400 uppercase font-black text-[10px] font-mono bg-[#080D16]/50">
-                          <th className="py-3 px-4">Destinatario / Canal</th>
-                          <th className="py-3 px-4">Placa / Servicio</th>
-                          <th className="py-3 px-4">Mensaje</th>
-                          <th className="py-3 px-4">Fecha / Envío</th>
-                          <th className="py-3 px-4 text-right">Acción</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#1E293B]">
-                        {notifications.map((notif) => (
-                          <tr key={notif.id} className="hover:bg-[#151D2A]/30 transition">
-                            <td className="py-3.5 px-4 space-y-1">
-                              <p className="font-extrabold text-white uppercase text-xs">{notif.appointment?.customer?.name || 'Cliente'}</p>
-                              <div className="flex items-center gap-1">
-                                <span className={`px-1.5 py-0.5 text-[9px] font-black rounded font-mono ${
-                                  notif.type === 'WHATSAPP' 
-                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                                    : notif.type === 'SMS' 
-                                    ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' 
-                                    : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
-                                }`}>
-                                  {notif.type}
-                                </span>
-                                <span className="text-[10px] text-gray-400 font-mono">{notif.recipient}</span>
-                              </div>
-                            </td>
-                            <td className="py-3.5 px-4 space-y-1">
-                              <p className="text-white font-black font-mono tracking-wider">{notif.appointment?.motorcycle?.plate || 'S/P'}</p>
-                              <p className="text-[10px] text-gray-400 truncate max-w-[120px]">{notif.appointment?.service?.name}</p>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              <p className="text-[10px] text-gray-300 leading-relaxed max-w-xs break-words border-l-2 border-[#1E293B] pl-2.5 py-0.5 italic">
-                                "{notif.message}"
-                              </p>
-                            </td>
-                            <td className="py-3.5 px-4 space-y-1 text-gray-400 font-mono text-[10px]">
-                              <p>{notif.appointment?.date ? new Date(notif.appointment.date).toISOString().split('T')[0] : 'S/D'} • {notif.appointment?.time}</p>
-                              <p className="text-[9px] text-gray-500">Enviado: {new Date(notif.createdAt).toLocaleTimeString()}</p>
-                            </td>
-                            <td className="py-3.5 px-4 text-right">
-                              {notif.appointment?.id && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleSendManualWhatsApp(notif.appointmentId)}
-                                  className="text-[10px] font-bold text-orange-400 hover:text-orange-300 bg-orange-500/5 border border-orange-500/10 hover:border-orange-500/30 px-2 py-1 rounded-md transition"
-                                >
-                                  Reenviar Manual
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-
-            </div>
-          </div>
-        )}
+        {/* TAB: WHATSAPP DEMO PANEL */}
+{activeTab === 'whatsapp' && (
+  <div className="space-y-6 animate-opacity">
+    <WhatsAppDemoPanel />
+  </div>
+)}
 
         {/* TAB: SAAS ONBOARDING LEADS & LICENSE APPROVAL */}
         {activeTab === 'leads' && (
