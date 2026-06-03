@@ -13,7 +13,7 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "seed": "tsx prisma/seed.ts",
-    "vercel-build": "node prisma/vercel-db-prep.cjs && prisma generate && vite build && npx tsx prisma/seed.ts"
+    "vercel-build": "node prisma/vercel-db-prep.cjs && prisma generate && prisma db push && vite build && npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
