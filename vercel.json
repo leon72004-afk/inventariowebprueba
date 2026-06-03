@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "node prisma/vercel-db-prep.cjs && prisma generate && vite build",
   "outputDirectory": "dist",
   "rewrites": [
     {
