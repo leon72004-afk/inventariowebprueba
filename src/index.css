@@ -139,6 +139,29 @@
   background: #334155;
 }
 
+.dashboard-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0f172a transparent;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+  background: #0f172a;
+  border-radius: 999px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1e293b;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

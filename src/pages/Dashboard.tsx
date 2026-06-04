@@ -1196,7 +1196,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div id="admin-dashboard-container" className="min-h-screen bg-[#090D16] text-[#E2E8F0] font-sans selection:bg-orange-500 selection:text-white">
+    <div id="admin-dashboard-container" className="min-h-screen bg-[#090D16] text-[#E2E8F0] font-sans selection:bg-orange-500 selection:text-white dashboard-scrollbar">
       
       {/* Upper Navigation Rail */}
       <header className="sticky top-0 z-40 bg-[#0E1320] border-b border-[#1E293B] shadow-lg">
@@ -1373,7 +1373,7 @@ export default function Dashboard() {
         {/* Scrollable inner container for stats, warnings and children tabs */}
         <div className={
           (user?.role === 'superadmin' && managedBusiness)
-            ? "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8 bg-[#090D16] min-h-0"
+            ? "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8 bg-[#090D16] min-h-0 dashboard-scrollbar"
             : "space-y-8"
         }>
           {/* Presentation Mode banner */}
