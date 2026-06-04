@@ -28,23 +28,9 @@ export default function Login({ onLogin }: LoginProps) {
   // Registration Fields
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
+  const [regPhone, setRegPhone] = useState('');
   const [regBusinessName, setRegBusinessName] = useState('');
-  const [regBusinessSlug, setRegBusinessSlug] = useState('');
-
-  // Auto-generate web address (slug) from business name
-  useEffect(() => {
-    if (regBusinessName) {
-      const generated = regBusinessName
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
-      setRegBusinessSlug(generated);
-    } else {
-      setRegBusinessSlug('');
-    }
-  }, [regBusinessName]);
+  const [regCity, setRegCity] = useState('');
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,12 +69,12 @@ export default function Login({ onLogin }: LoginProps) {
 
   const nextStep = () => {
     if (regStep === 1) {
-      if (!regName || !regEmail || !regPassword) {
+      if (!regName || !regEmail || !regPhone) {
         toast.error('Completa todos los campos del administrador para continuar.');
         return;
       }
-      if (regPassword.length < 6) {
-        toast.error('La contraseña debe tener al menos 6 caracteres.');
+      if (regPhone.length < 7) {
+        toast.error('Ingresa un número de teléfono válido.');
         return;
       }
     }
@@ -101,37 +87,32 @@ export default function Login({ onLogin }: LoginProps) {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regName || !regEmail || !regPassword || !regBusinessName || !regBusinessSlug) {
+    if (!regName || !regEmail || !regPhone || !regBusinessName || !regCity) {
       toast.error('Por favor completa todos los campos requeridos.');
       return;
     }
     setLoading(true);
     try {
-      // 1. Create Business Shop and associated Admin User Account setup
-      await api.post('/auth/register', {
+      await api.post('/leads', {
         name: regName,
         email: regEmail,
-        password: regPassword,
+        phone: regPhone,
         businessName: regBusinessName,
-        businessSlug: regBusinessSlug
+        city: regCity
       });
 
-      toast.success('¡Lavadero creado con éxito! Iniciando sesión automáticamente...');
+      toast.success('¡Solicitud enviada con éxito! Nos pondremos en contacto contigo pronto.');
 
-      // 2. Perform Seamless Session Login
-      const loginRes = await api.post('/auth/login', {
-        email: regEmail,
-        password: regPassword
-      });
-
-      if (loginRes.data.token) {
-        localStorage.setItem('wewash_token', loginRes.data.token);
-      }
-      onLogin(loginRes.data.user);
-      toast.success(`¡Bienvenido ${loginRes.data.user.name}! Te encuentras en tu Panel Directo.`);
+      // Reset form
+      setRegStep(1);
+      setRegName('');
+      setRegEmail('');
+      setRegPhone('');
+      setRegBusinessName('');
+      setRegCity('');
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.error || 'Error registrando el lavadero. Prueba con un correo o dirección web diferente.');
+      toast.error(err.response?.data?.error || 'Error al enviar la solicitud. Intenta de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
@@ -154,10 +135,10 @@ export default function Login({ onLogin }: LoginProps) {
             <Sparkles className="h-7 w-7 animate-pulse" />
           </div>
           <h2 className="text-3xl font-black text-white tracking-tight uppercase">
-            {isRegister ? 'Crear mi Lavadero' : 'Acceder al Panel'}
+            {isRegister ? 'Solicitar mi Negocio' : 'Acceder al Panel'}
           </h2>
           <p className="text-xs text-orange-500 font-extrabold uppercase tracking-widest">
-            {isRegister ? 'Formulario de registro' : 'Administrador y personal'}
+            {isRegister ? 'Te contactaremos para crear tu lavadero' : 'Administrador y personal'}
           </p>
         </div>
 
@@ -258,8 +239,8 @@ export default function Login({ onLogin }: LoginProps) {
               {regStep === 1 && (
                 <div className="space-y-3.5 animate-opacity">
                   <div>
-                    <h4 className="text-xs font-black text-white uppercase tracking-tight">1. Tu cuenta de Administrador</h4>
-                    <p className="text-[10px] text-gray-400">Datos primarios del propietario para acceder al panel.</p>
+                    <h4 className="text-xs font-black text-white uppercase tracking-tight">1. Tus datos de contacto</h4>
+                    <p className="text-[10px] text-gray-400">Datos para que podamos comunicarnos contigo.</p>
                   </div>
 
                   <div className="space-y-1">
@@ -293,16 +274,19 @@ export default function Login({ onLogin }: LoginProps) {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] text-gray-400 uppercase font-black">Crea tu Contraseña *</label>
-                    <input 
-                      type="password"
-                      required
-                      minLength={6}
-                      placeholder="Mínimo 6 caracteres"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl px-4 py-2 text-xs outline-none text-white transition"
-                    />
+                    <label className="text-[10px] text-gray-400 uppercase font-black">Número de Teléfono *</label>
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-2.5 h-4 w-4 text-gray-500" />
+                      <input 
+                        type="tel"
+                        required
+                        minLength={7}
+                        placeholder="Ej: +57 322 123 4567"
+                        value={regPhone}
+                        onChange={(e) => setRegPhone(e.target.value)}
+                        className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl pl-10 pr-4 py-2 text-xs outline-none text-white transition animate-none"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -311,16 +295,16 @@ export default function Login({ onLogin }: LoginProps) {
               {regStep === 2 && (
                 <div className="space-y-3.5 animate-opacity">
                   <div>
-                    <h4 className="text-xs font-black text-white uppercase tracking-tight">2. Detalles de tu Establecimiento</h4>
-                    <p className="text-[10px] text-gray-400 font-medium font-sans">Asigna el nombre y configúralo para toda la red de ReserveFlow.</p>
+                    <h4 className="text-xs font-black text-white uppercase tracking-tight">2. Detalles de tu Negocio</h4>
+                    <p className="text-[10px] text-gray-400 font-medium font-sans">Cuéntanos sobre tu negocio y ubicación.</p>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] text-gray-400 uppercase font-black">Nombre Comercial del Establecimiento *</label>
+                    <label className="text-[10px] text-gray-400 uppercase font-black">Nombre Comercial del Negocio *</label>
                     <input 
                       type="text"
                       required
-                      placeholder="Ej: Estética Sentidos, Barbería Roma, VIP Detail, Clinica Odonto"
+                      placeholder="Ej: Estética Sentidos, Barbería Roma, VIP Detail"
                       value={regBusinessName}
                       onChange={(e) => setRegBusinessName(e.target.value)}
                       className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl px-4 py-2 text-xs outline-none text-white transition"
@@ -328,21 +312,18 @@ export default function Login({ onLogin }: LoginProps) {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] text-gray-400 uppercase font-black">Identificador Web / Slug URL *</label>
-                    <div className="flex items-center bg-[#080D16] border border-[#1E293B] rounded-xl px-3 py-2 text-xs">
-                      <span className="text-gray-500 font-mono select-none">reserveflow.com/</span>
+                    <label className="text-[10px] text-gray-400 uppercase font-black">Ciudad *</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3.5 top-2.5 h-4 w-4 text-gray-500" />
                       <input 
                         type="text"
                         required
-                        placeholder="mi-negocio-premium"
-                        value={regBusinessSlug}
-                        onChange={(e) => setRegBusinessSlug(e.target.value.toLowerCase().replace(/[^a-z0-9\-]/g, ''))}
-                        className="bg-transparent flex-grow outline-none border-none text-orange-400 font-black font-mono pl-0.5"
+                        placeholder="Ej: Medellín, Bogotá, Cali"
+                        value={regCity}
+                        onChange={(e) => setRegCity(e.target.value)}
+                        className="w-full bg-[#080D16] border border-[#1E293B] focus:border-orange-500 rounded-xl pl-10 pr-4 py-2 text-xs outline-none text-white transition animate-none"
                       />
                     </div>
-                    <p className="text-[9px] text-gray-400 mt-1 leading-normal italic">
-                      Tus clientes usarán este enlace directo para programar sus citas y ver disponibilidad.
-                    </p>
                   </div>
                 </div>
               )}
@@ -375,7 +356,7 @@ export default function Login({ onLogin }: LoginProps) {
                     disabled={loading}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs rounded-xl shadow-lg transition disabled:opacity-50"
                   >
-                    {loading ? 'Creando establecimiento...' : 'Crear mi Lavadero 🚀'}
+                    {loading ? 'Enviando solicitud...' : 'Enviar Solicitud 📩'}
                   </button>
                 )}
               </div>
